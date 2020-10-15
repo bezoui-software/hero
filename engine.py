@@ -1,20 +1,36 @@
 digits = "0123456789"
 alpha = "azertyuiopqsdfghjklmwxcvbn"
 math_syntaxs = "+-()*^/"
-syntaxs = {"print":"PRINT","'":"Q_MARK",";":"ENDLINE",",":"AND","=":"EQUAL","$":"VAR","input":"INPUT","str":"CONVERT_STRING","int":"CONVERT_INT","float":"CONVERT_FLOAT","expr":"CONVERT_EXPR","(":"START_PARENTHESE",")":"END_PARENTHESE"}
-  
+syntaxs = {
+  "print": "PRINT",
+ ";": "ENDLINE",
+   "'": "Q_MARK",
+  "input": "INPUT",
+  "str": "CONVERT_STRING",
+  "int": "CONVERT_INT",
+  "f,": "AND",
+  "=": "EQUAL",
+  "$": "VAR",
+  "float": "CONVERT_FLOAT",
+  "expr": "CONVERT_EXPR",
+  "(": "START_PARENTHESE",
+  ")": "END_PARENTHESE"
+}
+
 class Hero:
     def __init__(self, filedata):
          self.filedata = filedata
          self.vars = {}
          self.errors = []
          self.run()
+          
     def run(self):
          self.lex()
          #print (self.tokens)
          self.parse()
          #print (self.tokens)
          self.printError()
+        
     def lex(self):
          tokens = []
          tok = ""
@@ -105,6 +121,7 @@ class Hero:
                      float_state = False
                      expr_state = True
          self.tokens = tokens
+        
     def parse(self): 
          tokens = self.tokens
          state = {"PRINT":False,"INPUT":False,"VAR":False,"CONVERT":False}
@@ -150,6 +167,7 @@ class Hero:
              elif state["VAR"]:
                  if i+1 < len(tokens) and tokens[i+1] == "EQUAL":
                      self.varNode(tokText,tokens[i+2])
+                    
     def printNode(self,tok,end="\n"):
         if tok != None:
              if ":" in tok and len(tok)>2:
@@ -324,7 +342,6 @@ class Hero:
                 self.errors.append(error)
                             
     def checkType(self, tok, type):
-        #print (tok,type)
       tok = str(tok)
       if tok != " " and tok != None:
         if ":" in list(tok):
@@ -339,7 +356,7 @@ class Hero:
       else:
         return False
         
-    def VAREXPR(self,varName, varvalue):
+    def VAREXPR(self, varName, varvalue):
         tempVar = self.remove(varValue, math_syntaxs)
         tempVarList = list(tempVar)
         for i in range(len(tempVarList)):
